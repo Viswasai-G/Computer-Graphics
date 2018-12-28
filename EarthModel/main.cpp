@@ -1,23 +1,11 @@
 /*
 
-	Homework Assignment 2 CISC440/640.
 
-	~Viswasai Gollamudi (702447399)
-
-
-
+	~Viswasai Gollamudi 
 
   Earth!
 
   all textures courtesy of http://www.shadedrelief.com/natural3/index.html
-
-  adapted by Christopher Rasmussen from the following texturing tutorials:
-  * http://www.lighthouse3d.com/tutorials/glsl-tutorial/shader-examples 
-  * http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube
-
-  2016: updated to OpenGL 3.3
-  2014: added multi-texturing, using STL now
-  2012: created
 
 */
 
