@@ -1,8 +1,3 @@
-//----------------------------------------------------------------------------
-// Homework 1- CISC 640
-// Viswasai Gollamudi, tejaswi@cis.udel.edu
-// Spring - 2018
-//----------------------------------------------------------------------------
 
 // Include standard headers
 #include <stdio.h>
