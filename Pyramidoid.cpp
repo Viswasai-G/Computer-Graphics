@@ -247,7 +247,7 @@ int main(void)
 	// Get a handle for our "MVP" uniform
 	MatrixID = glGetUniformLocation(programID, "MVP");
 
-	// Projection matrix : 90° Field of View, 16:9 ratio, display range : 0.1 unit <-> 100 units
+	// Projection matrix : 90Â° Field of View, 16:9 ratio, display range : 0.1 unit <-> 100 units
 	Projection = glm::perspective(90.0f, 16.0f / 9.0f, 0.1f, 100.0f);
 	
 	// Or, for an ortho camera :
