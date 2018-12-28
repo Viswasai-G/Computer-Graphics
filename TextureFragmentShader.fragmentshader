@@ -1,0 +1,132 @@
+#version 330 core
+
+// Interpolated values from the vertex shaders
+in vec2 UV;
+in vec3 EyeDirection_cameraspace;
+in vec3 LightDirection_cameraspace;
+in vec3 Normal_cameraspace;
+in vec3 vertexPosition_cameraspace;
+in vec3 Normals_in_cameraspace;
+in vec3 Position_worldspace;
+
+
+// Ouput data
+out vec3 color;
+
+// Values that stay constant for the whole mesh.
+
+uniform sampler2D tex_elevation;
+uniform sampler2D tex_water;
+uniform sampler2D tex_night;
+uniform sampler2D tex_clouds;
+uniform sampler2D tex_color;
+uniform int draw_mode;
+uniform vec3 LightPosition_worldspace;
+
+
+
+uniform mat4 MVP;
+uniform mat4 View;
+uniform mat4 Model;
+
+
+
+void main(){
+
+
+	vec3 LightColor = vec3(1,1,1); // Light properties 
+	
+	// Material properties
+	vec3 MaterialDiffuseColor = vec3(1,0.6,0);
+	vec3 MaterialAmbientColor = vec3(0.03,0.03,0.03);
+	vec3 MaterialSpecularColor = vec3(1,1,1);
+
+	// Normal of the computed fragment, in camera space
+	vec3 n = normalize(Normal_cameraspace);
+
+	// Direction to the light from this fragment 
+	vec3 l = normalize(LightDirection_cameraspace);
+
+		// foreshortening factor
+	float cosTheta = dot( n, l);
+	float cosAlpha = dot( -l,n );
+	
+	// Eye vector (fragment to camera) & 
+// direction in which light is reflected
+	vec3 E = normalize(EyeDirection_cameraspace);
+	vec3 R = reflect(l,n);
+
+
+	// Smooth transitions between day and night
+	float day = smoothstep(float(-0.27), float(1), cosTheta);
+	float night = smoothstep(float(-0.35), float(1), cosAlpha);
+
+
+	// specular parameters
+	float cosDelta = clamp(dot( E, R ),0,1);
+
+	//Light Power
+	float LightPower = 2;
+
+
+	//-------------------------------------------
+	//Trials to bump mapping
+	vec3 temp = vec3( texture(tex_elevation,UV).gbr);
+	vec3 xpos = dFdx(temp);
+	vec3 ypos = dFdy(temp);
+	vec3 height = vec3(cross(xpos, ypos));
+	vec3 newnorm = normalize(height + n); // Adding offset with actual vertex normal.
+	//vec3 modelviewnormal = vec3(Model * vec4(height, 0)).xyz;
+	
+	float cosbump = clamp(dot(newnorm,l), 0,1);
+	//------------------------------------------
+
+
+	  /*MaterialAmbientColor +
+    // Diffuse : "color" of the object
+    MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) ;
+    MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
+	*/
+
+
+   if (draw_mode == 0)
+    color =   LightColor * cosTheta ;
+
+   else if (draw_mode == 1) 
+   	color =  ( texture(tex_elevation, UV)).gbr * cosbump  ;
+
+   else if (draw_mode == 2) 
+   	color = texture( tex_water, UV ).gbr  * cosTheta ;
+
+   else if (draw_mode == 3) 
+   	color = texture( tex_night, UV ).gbr * MaterialSpecularColor * pow(cosTheta, 5) ;
+
+   else if (draw_mode == 4) 
+   	color = texture( tex_clouds, UV ).gbr;
+
+   else if (draw_mode == 5) 
+   	color =  texture( tex_color, UV ).gbr;
+
+
+   else if (draw_mode == 7) 
+	color = LightColor * cosTheta * texture(tex_color,UV).gbr ;
+
+	else if (draw_mode == 8) 
+	{
+	//color =  LightColor * pow(cosTheta, 1) * texture(tex_color,UV).gbr +LightColor * pow(cosTheta , 32) * texture( tex_water, UV ).gbr;
+	
+		//if (draw_mode == 11) 
+		color =  LightColor * pow(cosTheta, 1) * texture(tex_color,UV).gbr +LightColor * pow(cosTheta , 128) * LightPower * texture( tex_water, UV ).gbr + ( texture(tex_elevation, UV)).gbr * cosbump;
+	}
+
+
+	else if (draw_mode == 9) 
+	color = LightColor * day * texture(tex_color,UV).gbr + LightColor * night * texture( tex_night, UV ).gbr;
+
+
+
+  // simple multi-texturing 
+  else if (draw_mode == 6)
+   	color = mix(texture(tex_night,UV).gbr, texture(tex_color,UV).gbr, 0.75);
+
+}
