@@ -211,7 +211,7 @@ void draw_sphere()
 			0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
 			3,                  // size
 			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
+			GL_FALSE,           // normalized
 			0,                  // stride
 			(void*)0            // array buffer offset
 			);
@@ -223,7 +223,7 @@ void draw_sphere()
 			1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
 			2,                                // size : U+V => 2
 			GL_FLOAT,                         // type
-			GL_FALSE,                         // normalized?
+			GL_FALSE,                         // normalized
 			0,                                // stride
 			(void*)0                          // array buffer offset
 			);
@@ -238,7 +238,7 @@ void draw_sphere()
 	  2,                                // attribute
 	  3,                                // size
 	  GL_FLOAT,                         // type
-	  GL_FALSE,                         // normalized?
+	  GL_FALSE,                         // normalized
 	  0,                                // stride
 	  (void*)0                          // array buffer offset
   );
